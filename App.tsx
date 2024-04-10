@@ -1,10 +1,13 @@
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
-import { RouteStack } from '@common/router'
+import MainLayout from '@layouts/MainLayout'
+import { NativeBaseProvider } from 'native-base'
+import { StyleSheet } from 'react-native'
 
 export default function App() {
-  return <RouteStack />
+  return (
+    <NativeBaseProvider>
+      <MainLayout />
+    </NativeBaseProvider>
+  )
 }
 
 const styles = StyleSheet.create({
