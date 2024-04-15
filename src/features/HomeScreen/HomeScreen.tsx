@@ -1,18 +1,29 @@
-import Card from '@components/Card'
-import { Box, Spinner, Stack } from 'native-base'
-import React, { useEffect, useState } from 'react'
-import CurrentWeather from './components/CurrentWeather'
-import { styles } from './styles'
-import * as Location from 'expo-location'
 import Api from '@common/apis/Api'
-import { WeatherData } from '@common/types/weather-data.type'
-import { mockForecastData, mockWeatherData } from './mockData'
-import { ForecastData } from '@common/types/forecast-data.type'
+import staryNight from '@common/assets/images/stary-night.jpg'
+import { CurrentWeatherDataResponse } from '@common/types/current-data.type'
+import { ForecastDataResponse } from '@common/types/forecast-data.type'
+import * as Location from 'expo-location'
+import { Box, HStack, ScrollView, Spinner, Stack, VStack } from 'native-base'
+import React, { useEffect, useState } from 'react'
+import { ImageBackground, ImageSourcePropType } from 'react-native'
+import CurrentVisibility from './components/CurremtVisibility'
+import CurrentFeelLike from './components/CurrentFeelLike'
+import CurrentHumidity from './components/CurrentHumidity'
+import CurrentPressure from './components/CurrentPressure'
+import CurrentUV from './components/CurrentUV'
+import CurrentWeather from './components/CurrentWeather'
+import CurrentWind from './components/CurrentWind'
+import ForecastDayly from './components/ForecastDayly'
+import ForecastHourly from './components/ForecastHourly'
+import { styles } from './styles'
 
 export default function HomeScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
-  const [forecastData, setForecastData] = useState<ForecastData | null>(null)
+  const [weatherData, setWeatherData] =
+    useState<CurrentWeatherDataResponse | null>(null)
+  const [forecastData, setForecastData] = useState<ForecastDataResponse | null>(
+    null
+  )
   const [foregroundPermissionAsync, setForegroundPermissionAsync] =
     useState<Location.PermissionStatus | null>(null)
   const [backgroundPermissionAsync, setBackgroundPermissionAsync] =
@@ -31,6 +42,7 @@ export default function HomeScreen() {
   useEffect(() => {
     ;(async () => {
       const { status } = await Location.requestBackgroundPermissionsAsync()
+      console.log(status)
       if (status !== 'granted') {
         return
       }
@@ -50,60 +62,97 @@ export default function HomeScreen() {
     }
   }, [foregroundPermissionAsync, backgroundPermissionAsync])
 
-  //useEffect(() => {
-  //  location && Api.getInstance().weatherData.getWeather(location?.coords.latitude, location?.coords.longitude)
-  //    .then((res) => {
-  //      console.log("current", JSON.stringify(res.data))
-  //      setWeatherData(res.data)
-  //    }).catch((err) => {
-  //      console.log(err)
-  //    })
-  //}, [location])
-
-  // Mock data for testing, uncomment the above useEffect to fetch real data
+  useEffect(() => {
+    location &&
+      Api.getInstance()
+        .weatherData.getCurrentWeather(
+          location?.coords.latitude,
+          location?.coords.longitude
+        )
+        .then((res) => {
+          console.log('current', JSON.stringify(res.data))
+          setWeatherData(res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+  }, [location])
 
   useEffect(() => {
-    setWeatherData(mockWeatherData)
-  }, [])
-
-  //useEffect(() => {
-  //  location && Api.getInstance().weatherData.getForecast(location?.coords.latitude, location?.coords.longitude)
-  //    .then((res) => {
-  //      console.log("forcast", JSON.stringify(res.data))
-  //      setForecastData(res.data)
-  //    }).catch((err) => {
-  //      console.log(err)
-  //    })
-  //}, [location])
-
-  // Mock data for testing, uncomment the above useEffect to fetch real data
-
-  useEffect(() => {
-    setForecastData(mockForecastData)
-  }, [])
+    location &&
+      Api.getInstance()
+        .weatherData.getForecast(
+          location?.coords.latitude,
+          location?.coords.longitude,
+          7
+        )
+        .then((res) => {
+          console.log('forecast', JSON.stringify(res.data))
+          setForecastData(res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+  }, [location])
 
   return (
-    <React.Fragment>
-      <Box style={styles.homeViewStyles}>
-        {weatherData ? (
-          <Stack>
-            <CurrentWeather
-              location={weatherData.name}
-              temp={weatherData.main.temp}
-            />
-            <Card title={'title'} body={<></>} />
-          </Stack>
-        ) : (
-          <Stack
-            height="100%"
-            justifyContent="center"
-            alignItems="center"
-            display="flex"
-          >
-            <Spinner size="lg" />
-          </Stack>
-        )}
-      </Box>
-    </React.Fragment>
+    <ScrollView>
+      <ImageBackground
+        source={staryNight as ImageSourcePropType}
+        style={styles.backgroundImage}
+      >
+        <Box style={styles.homeViewStyles}>
+          {weatherData && forecastData ? (
+            <VStack>
+              <CurrentWeather
+                currentWeatherData={weatherData.current}
+                daylyData={forecastData.forecast.forecastday[0].day}
+                currentLocation={weatherData.location}
+              />
+              <VStack space={4}>
+                <ForecastHourly
+                  currentWeatherData={forecastData.current}
+                  forecastHourlyData={forecastData.forecast.forecastday}
+                />
+                <ForecastDayly
+                  forecastDaylyData={forecastData.forecast.forecastday}
+                  currentTemp={weatherData.current.temp_c}
+                />
+                <HStack space={4}>
+                  <CurrentHumidity
+                    currentWeatherData={weatherData.current}
+                    forecastData={forecastData.forecast.forecastday[0]}
+                  />
+                  <CurrentUV currentWeatherData={weatherData.current} />
+                </HStack>
+                <CurrentWind
+                  currentWeatherData={weatherData.current}
+                  forecastData={forecastData.forecast.forecastday[0]}
+                />
+                <HStack space={4}>
+                  <CurrentFeelLike currentWeatherData={weatherData.current} />
+                  <CurrentPressure
+                    currentWeatherData={weatherData.current}
+                    forecastData={forecastData.forecast.forecastday}
+                  />
+                </HStack>
+                <HStack space={4}>
+                  <CurrentVisibility currentWeatherData={weatherData.current} />
+                </HStack>
+              </VStack>
+            </VStack>
+          ) : (
+            <Stack
+              height="100%"
+              justifyContent="center"
+              alignItems="center"
+              display="flex"
+            >
+              <Spinner size="lg" color="gray.300" />
+            </Stack>
+          )}
+        </Box>
+      </ImageBackground>
+    </ScrollView>
   )
 }

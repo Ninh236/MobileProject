@@ -1,26 +1,31 @@
+import React from 'react'
 import { Box, Divider, Heading, Text } from 'native-base'
 import { ThemeComponentSizeType } from 'native-base/lib/typescript/components/types'
 import { ReactNode } from 'react'
 import { styles } from './styles'
+import { StyleProp, ViewStyle } from 'react-native'
 
 interface CardProps {
-  title: string
+  title?: string
   titleIcon?: ReactNode
   titleSize?: ThemeComponentSizeType<'Heading'>
-  hasDivider?: boolean
+  cardCustomStyles?: StyleProp<ViewStyle>
   body: ReactNode
 }
 
 export default function Card(props: CardProps) {
-  const { title, titleSize, hasDivider, body } = props
+  const { title, titleIcon, titleSize, cardCustomStyles, body } = props
+
   return (
-    <Box style={styles.cardStyles}>
-      <Box>
-        <Text size={titleSize} style={styles.titleStyles}>
-          {title}
-        </Text>
+    <Box style={[styles.cardStyles, cardCustomStyles]}>
+      <Box display="flex" flexDirection="row" alignItems="center">
+        {titleIcon}
+        {title && (
+          <Text fontSize={titleSize} style={styles.titleStyles}>
+            {title}
+          </Text>
+        )}
       </Box>
-      {hasDivider && <Divider />}
       <Box>{body}</Box>
     </Box>
   )
