@@ -1,3 +1,4 @@
+import { AirQualityData } from './air-quality.type'
 import { Condition, CurrentWeatherData } from './current-data.type'
 import { LocationData } from './location-data.type'
 
@@ -22,6 +23,7 @@ export interface ForecastDayDayData {
   daily_chance_of_snow: number
   condition: Condition
   uv: number
+  air_quality: AirQualityData
 }
 
 export interface ForecastDayAstroData {
@@ -70,6 +72,7 @@ export interface ForecastDayHourData {
   gust_mph: number
   gust_kph: number
   uv: number
+  air_quality: AirQualityData
 }
 
 export interface ForecastDayData {

@@ -16,6 +16,8 @@ import CurrentWind from './components/CurrentWind'
 import ForecastDayly from './components/ForecastDayly'
 import ForecastHourly from './components/ForecastHourly'
 import { styles } from './styles'
+import CurrentPrecipitation from './components/CurrentPrecipitation'
+import CurrentAirQuality from './components/CurrentAirQuality'
 
 export default function HomeScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
@@ -138,7 +140,13 @@ export default function HomeScreen() {
                 </HStack>
                 <HStack space={4}>
                   <CurrentVisibility currentWeatherData={weatherData.current} />
+                  <CurrentPrecipitation
+                    currentWeatherData={weatherData.current}
+                  />
                 </HStack>
+                {weatherData.current.air_quality && (
+                  <CurrentAirQuality currentWeatherData={weatherData.current} />
+                )}
               </VStack>
             </VStack>
           ) : (
