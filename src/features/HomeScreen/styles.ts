@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   homeViewStyles: {
@@ -17,6 +17,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-    minHeight: '100%',
+    position: 'absolute',
+    height: '100%',
+    minHeight: Dimensions.get('window').height,
+    minWidth: Dimensions.get('window').width,
+    zIndex: -1,
   },
 })
