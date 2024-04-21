@@ -6,7 +6,8 @@ export const styles = StyleSheet.create({
     paddingBottom: 84,
     paddingHorizontal: 16,
     backgroundColor: '#cccccc55',
-    minHeight: '100%',
+    height: '100%',
+    minHeight: Dimensions.get('window').height,
   },
 
   textStyles: {
