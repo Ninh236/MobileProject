@@ -1,3 +1,4 @@
+import { AirQualityData } from './air-quality.type'
 import { LocationData } from './location-data.type'
 
 export interface Condition {
@@ -30,6 +31,7 @@ export interface CurrentWeatherData {
   uv: number
   gust_mph: number
   gust_kph: number
+  air_quality?: AirQualityData
 }
 
 export interface CurrentWeatherDataResponse {

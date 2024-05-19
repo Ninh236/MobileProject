@@ -1,14 +1,17 @@
 import Api from '@common/apis/Api'
 import staryNight from '@common/assets/images/stary-night.jpg'
-import { CurrentWeatherDataResponse } from '@common/types/current-data.type'
-import { ForecastDataResponse } from '@common/types/forecast-data.type'
+import { weatherReducerCase } from '@common/redux/reducers/weather.reducer'
+import { RootState } from '@common/redux/stores'
 import * as Location from 'expo-location'
 import { Box, HStack, ScrollView, Spinner, Stack, VStack } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, ImageSourcePropType } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import CurrentVisibility from './components/CurremtVisibility'
+import CurrentAirQuality from './components/CurrentAirQuality'
 import CurrentFeelLike from './components/CurrentFeelLike'
 import CurrentHumidity from './components/CurrentHumidity'
+import CurrentPrecipitation from './components/CurrentPrecipitation'
 import CurrentPressure from './components/CurrentPressure'
 import CurrentUV from './components/CurrentUV'
 import CurrentWeather from './components/CurrentWeather'
@@ -19,11 +22,15 @@ import { styles } from './styles'
 
 export default function HomeScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
-  const [weatherData, setWeatherData] =
-    useState<CurrentWeatherDataResponse | null>(null)
-  const [forecastData, setForecastData] = useState<ForecastDataResponse | null>(
-    null
+  const dispatch = useDispatch()
+
+  const weatherData = useSelector(
+    (state: RootState) => state.weatherReducer.currentWeatherData
   )
+  const forecastData = useSelector(
+    (state: RootState) => state.weatherReducer.forecastData
+  )
+
   const [foregroundPermissionAsync, setForegroundPermissionAsync] =
     useState<Location.PermissionStatus | null>(null)
   const [backgroundPermissionAsync, setBackgroundPermissionAsync] =
@@ -71,7 +78,10 @@ export default function HomeScreen() {
         )
         .then((res) => {
           console.log('current', JSON.stringify(res.data))
-          setWeatherData(res.data)
+          dispatch({
+            type: weatherReducerCase.setCurrentWeatherData,
+            payload: res.data,
+          })
         })
         .catch((err) => {
           console.log(err)
@@ -88,7 +98,10 @@ export default function HomeScreen() {
         )
         .then((res) => {
           console.log('forecast', JSON.stringify(res.data))
-          setForecastData(res.data)
+          dispatch({
+            type: weatherReducerCase.setForecastData,
+            payload: res.data,
+          })
         })
         .catch((err) => {
           console.log(err)
@@ -96,11 +109,8 @@ export default function HomeScreen() {
   }, [location])
 
   return (
-    <ScrollView>
-      <ImageBackground
-        source={staryNight as ImageSourcePropType}
-        style={styles.backgroundImage}
-      >
+    <React.Fragment>
+      <ScrollView>
         <Box style={styles.homeViewStyles}>
           {weatherData && forecastData ? (
             <VStack>
@@ -138,7 +148,13 @@ export default function HomeScreen() {
                 </HStack>
                 <HStack space={4}>
                   <CurrentVisibility currentWeatherData={weatherData.current} />
+                  <CurrentPrecipitation
+                    currentWeatherData={weatherData.current}
+                  />
                 </HStack>
+                {weatherData.current.air_quality && (
+                  <CurrentAirQuality currentWeatherData={weatherData.current} />
+                )}
               </VStack>
             </VStack>
           ) : (
@@ -152,7 +168,11 @@ export default function HomeScreen() {
             </Stack>
           )}
         </Box>
-      </ImageBackground>
-    </ScrollView>
+      </ScrollView>
+      <ImageBackground
+        source={staryNight as ImageSourcePropType}
+        style={styles.backgroundImage}
+      ></ImageBackground>
+    </React.Fragment>
   )
 }

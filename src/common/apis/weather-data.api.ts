@@ -8,13 +8,13 @@ export default class WeatherData extends baseApi {
 
   getCurrentWeather(lat: number, lon: number) {
     return this.Get<CurrentWeatherDataResponse>(
-      `current.json?q=${lat + ',' + lon}&key=${config.API_KEY}&lang=vi`
+      `current.json?q=${lat + ',' + lon}&key=${config.API_KEY}&lang=vi&aqi=yes`
     )
   }
 
   getForecast(lat: number, lon: number, days: number = 1) {
     return this.Get<ForecastDataResponse>(
-      `forecast.json?q=${lat + ',' + lon}&days=${days}&key=${config.API_KEY}&lang=vi`
+      `forecast.json?q=${lat + ',' + lon}&days=${days}&key=${config.API_KEY}&lang=vi&aqi=yes`
     )
   }
 }
