@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { styles } from './styles'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigation } from '@common/router'
+import React from 'react'
 
 type Tab = {
   name: string

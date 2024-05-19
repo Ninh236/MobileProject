@@ -11,10 +11,30 @@ export const styles = StyleSheet.create({
     fontSize: 84,
     lineHeight: 88,
     fontWeight: '200',
+    height: 80,
     color: '#FFF',
   },
 
-  degreeSymbol: {
-    position: 'absolute',
+  tempDaylyText: {
+    fontSize: 20,
+    lineHeight: 24,
+    fontWeight: '500',
+    color: '#FFF',
+  },
+
+  conditionContainer: {
+    height: 48,
+  },
+
+  conditionImage: {
+    height: 64,
+    width: 64,
+  },
+
+  conditionText: {
+    fontSize: 20,
+    lineHeight: 24,
+    fontWeight: '500',
+    color: '#FFF',
   },
 })

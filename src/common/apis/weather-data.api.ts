@@ -1,20 +1,20 @@
 import baseApi from '@common/core/base-api'
 import { config } from 'config'
-import { WeatherData as WeatherDataType } from '@common/types/weather-data.type'
-import { ForecastData as ForecastDataType } from '@common/types/forecast-data.type'
+import { CurrentWeatherDataResponse } from '@common/types/current-data.type'
+import { ForecastDataResponse } from '@common/types/forecast-data.type'
 
 export default class WeatherData extends baseApi {
-  protected prefix: string = 'data/2.5'
+  protected prefix: string = ''
 
-  getWeather(lat: number, lon: number) {
-    return this.Get<WeatherDataType>(
-      `weather?lat=${lat}&lon=${lon}&appid=${config.API_KEY}&lang=vi`
+  getCurrentWeather(lat: number, lon: number) {
+    return this.Get<CurrentWeatherDataResponse>(
+      `current.json?q=${lat + ',' + lon}&key=${config.API_KEY}&lang=vi`
     )
   }
 
-  getForecast(lat: number, lon: number) {
-    return this.Get<ForecastDataType>(
-      `forecast?lat=${lat}&lon=${lon}&appid=${config.API_KEY}&lang=vi`
+  getForecast(lat: number, lon: number, days: number = 1) {
+    return this.Get<ForecastDataResponse>(
+      `forecast.json?q=${lat + ',' + lon}&days=${days}&key=${config.API_KEY}&lang=vi`
     )
   }
 }

@@ -33,3 +33,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Bang's local files
+MobileApplicationDevelopment.code-workspace
+run.ps1
