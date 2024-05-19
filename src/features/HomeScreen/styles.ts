@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     paddingTop: 64,
     paddingBottom: 84,
     paddingHorizontal: 16,
-    backgroundColor: '#cccccc55',
+    backgroundColor: '#00000000',
     height: '100%',
     minHeight: Dimensions.get('window').height,
   },
