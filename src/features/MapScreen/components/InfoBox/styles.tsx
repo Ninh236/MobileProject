@@ -68,4 +68,71 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 10,
   },
+
+  forecastButton: {
+    backgroundColor: 'rgba(255, 255, 0, 0.4)',
+    flex: 1,
+    flexDirection: 'column',
+    textAlign: 'center',
+  },
+  forecastButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  forecastButtonTemp: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
+  forecastButtonIcon: {
+    width: 16,
+    height: 16,
+  },
+
+  forecastBox: {
+    top: getStatusBarHeight() + 64,
+    height: 96,
+    position: 'absolute',
+    width: '100%',
+    zIndex: 100,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+
+  forecastDayBox: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    minWidth: 64,
+    marginLeft: 0,
+    marginRight: 10,
+    marginVertical: 5,
+    paddingTop: 5,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  forecastDayDate: {
+    fontSize: 20,
+    lineHeight: 20,
+    color: 'white',
+  },
+  forecastDayText: {
+    fontSize: 12,
+    lineHeight: 12,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
+    width: 72,
+  },
+  forecastDayTemp: {
+    fontSize: 24,
+    lineHeight: 24,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
+  },
 })
