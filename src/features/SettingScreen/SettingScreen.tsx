@@ -10,6 +10,7 @@ import {
   FlatList,
   VStack,
 } from 'native-base'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 interface SettingOption {
   key: string
@@ -154,7 +155,12 @@ const SettingScreen: React.FC = () => {
   }
 
   return (
-    <Box p={5}>
+    <Box
+      p={5}
+      style={{
+        paddingTop: getStatusBarHeight() + 16,
+      }}
+    >
       <FlatList
         data={settingOptions}
         renderItem={renderSettingItem}
