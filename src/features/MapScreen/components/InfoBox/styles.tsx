@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   },
 
   forecastButton: {
-    backgroundColor: 'rgba(255, 255, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     flex: 1,
     flexDirection: 'column',
     textAlign: 'center',

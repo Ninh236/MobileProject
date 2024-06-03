@@ -43,6 +43,7 @@ export default function FooterTab() {
     <HStack style={styles.footerTab} p={2} justifyContent="space-around">
       {tabs.map((tab) => (
         <Pressable
+          style={{ minWidth: 128 }}
           key={tab.name}
           onPress={() => {
             setSelectedTab(tab.name)

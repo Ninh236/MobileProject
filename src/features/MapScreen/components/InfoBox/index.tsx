@@ -1,4 +1,5 @@
-import { Box, Button, FlatList, Text, View } from 'native-base'
+import React from 'react'
+import { Box, Button, FlatList, Slide, Text, View } from 'native-base'
 import { styles } from './styles'
 import { WeatherIcon } from '@components/WeatherIcon'
 import {
@@ -17,7 +18,6 @@ interface IProps {
 export function InfoBox({ region, setLoading }: IProps) {
   let [r, setCurrent] = useState<WeatherApiDataWithForecast | null>(null)
   let [weatherLoading, setWeatherLoading] = useState(false)
-  let [forecastOpen, setForecastOpen] = useState(false)
 
   useEffect(() => {
     if (!region) {
@@ -30,8 +30,11 @@ export function InfoBox({ region, setLoading }: IProps) {
     api
       .getForecast(region?.latitude, region?.longitude)
       .then((r) => {
-        setCurrent(r.data)
-        console.log(r.data)
+        let d = r.data
+        let days = d.forecast.forecastday
+        let index = days.findIndex((r) => r.date_epoch < +new Date())
+        d.forecast.forecastday = days.slice(index + 1)
+        setCurrent(d)
         return
       })
       .catch((r) => {
@@ -43,15 +46,19 @@ export function InfoBox({ region, setLoading }: IProps) {
       })
   }, [region])
 
+  let hasWeather = !weatherLoading && region
+
   return (
     <>
       <View style={styles.infoBox}>
         <View style={styles.weatherDetails}>
-          <Box>
-            <Text style={styles.temperatureBoxText}>
-              {r?.current.temp_c} °C
-            </Text>
-          </Box>
+          {hasWeather && (
+            <Box>
+              <Text style={styles.temperatureBoxText}>
+                {Math.floor(r?.current.temp_c || 0)} °C
+              </Text>
+            </Box>
+          )}
 
           <Box
             style={{
@@ -60,32 +67,30 @@ export function InfoBox({ region, setLoading }: IProps) {
               justifyContent: 'space-between',
             }}
           >
-            <Text style={styles.infoText}>
+            <Text
+              style={{
+                ...styles.infoText,
+                textAlign: weatherLoading ? 'center' : 'left',
+                width: weatherLoading ? '100%' : undefined,
+              }}
+            >
               {region
                 ? weatherLoading
-                  ? 'Loading weather info...'
+                  ? 'Đang tải...'
                   : r?.current.condition.text
-                : 'Waiting for location...'}
+                : 'Đang định vị...'}
             </Text>
-            <Text style={styles.secondaryText}>
-              Feels like {Math.floor(r?.current.feelslike_c || 0)} °C
-            </Text>
+            {hasWeather && (
+              <Text style={styles.secondaryText}>
+                Cảm giác {Math.floor(r?.current.feelslike_c || 0)} °C
+              </Text>
+            )}
           </Box>
 
           {!!r && (
             <Box>
-              <Button
-                style={{
-                  ...styles.forecastButton,
-                  backgroundColor: forecastOpen
-                    ? 'rgba(255, 255, 0, 0.4)'
-                    : 'transparent',
-                }}
-                onPress={() => {
-                  setForecastOpen(!forecastOpen)
-                }}
-              >
-                <Text style={styles.forecastButtonText}>Tomorrow</Text>
+              <Button style={styles.forecastButton}>
+                <Text style={styles.forecastButtonText}>Ngày mai</Text>
                 <Text style={styles.forecastButtonTemp}>
                   {Math.floor(r?.forecast?.forecastday?.[1].day.avgtemp_c)} °C
                 </Text>
@@ -93,14 +98,16 @@ export function InfoBox({ region, setLoading }: IProps) {
             </Box>
           )}
         </View>
-        <WeatherIcon
-          imageUrl={`https:${r?.current.condition.icon}`}
-          style={styles.weatherIcon}
-          alt={r?.current.condition.text || ''}
-        />
+        {hasWeather && (
+          <WeatherIcon
+            imageUrl={`https:${r?.current.condition.icon}`}
+            style={styles.weatherIcon}
+            alt={r?.current.condition.text || ''}
+          />
+        )}
       </View>
-      {forecastOpen && r?.forecast && (
-        <>
+      {true && (
+        <Slide in={!!r?.forecast} placement="top" duration={100}>
           <View style={styles.forecastBox}>
             <FlatList
               data={r?.forecast.forecastday ?? []}
@@ -112,7 +119,7 @@ export function InfoBox({ region, setLoading }: IProps) {
                 if (!i.index) boxStyles.marginLeft = 10
 
                 let time = new Date(item.date_epoch * 1000)
-                let d = `${time.getDate()}/${time.getMonth()}`
+                let d = `${time.getDate()}/${time.getMonth() + 1}`
 
                 return (
                   <>
@@ -140,7 +147,7 @@ export function InfoBox({ region, setLoading }: IProps) {
               keyExtractor={(r) => r.date_epoch.toString()}
             />
           </View>
-        </>
+        </Slide>
       )}
     </>
   )
