@@ -18,8 +18,11 @@ export default function settingReducer(
 ): settingReducerState {
   switch (type) {
     case settingReducerCase.changeSettings:
-      state.settings = payload
-      return Object.create(state)
+      let s = {
+        ...state,
+        settings: payload,
+      }
+      return Object.create(s)
     default:
       return state
   }
