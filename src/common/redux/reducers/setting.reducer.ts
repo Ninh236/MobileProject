@@ -23,7 +23,6 @@ export default function settingReducer(
         ...state,
         settings: payload,
       }
-      console.log('saved settings')
       return Object.create(s)
     default:
       return state
