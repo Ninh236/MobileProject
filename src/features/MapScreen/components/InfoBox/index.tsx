@@ -24,6 +24,8 @@ export function InfoBox({ region, setLoading }: IProps) {
       return
     }
 
+    console.log(region.latitude, region.longitude)
+
     setLoading?.(true)
     setWeatherLoading(true)
     let api = new WeatherApi()
@@ -44,7 +46,7 @@ export function InfoBox({ region, setLoading }: IProps) {
         setLoading?.(false)
         setWeatherLoading(false)
       })
-  }, [region])
+  }, [region?.latitude.toFixed(3), region?.longitude.toFixed(3)])
 
   let hasWeather = !weatherLoading && region
 

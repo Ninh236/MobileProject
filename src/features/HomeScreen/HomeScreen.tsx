@@ -82,7 +82,6 @@ export default function HomeScreen() {
           location?.coords.longitude
         )
         .then((res) => {
-          console.log('current', JSON.stringify(res.data))
           dispatch({
             type: weatherReducerCase.setCurrentWeatherData,
             payload: res.data,
@@ -108,7 +107,6 @@ export default function HomeScreen() {
           7
         )
         .then((res) => {
-          console.log('forecast', JSON.stringify(res.data))
           dispatch({
             type: weatherReducerCase.setForecastData,
             payload: res.data,

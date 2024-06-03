@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Switch,
@@ -11,24 +11,17 @@ import {
   VStack,
 } from 'native-base'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { useDispatch, useSelector } from 'react-redux'
+import { settingReducerCase } from '@common/redux/reducers/setting.reducer'
+import { RootState } from '@common/redux/stores'
+import { Settings } from '@common/types/settings.type'
+import { styles } from './styles'
 
 interface SettingOption {
   key: string
   label: string
   type: 'select' | 'switch' | 'text'
   options?: string[]
-}
-
-interface Settings {
-  temperatureUnit: string
-  windSpeedUnit: string
-  pressureUnit: string
-  timeFormat: string
-  notificationCurrentConditions: boolean
-  warningNotifications: boolean
-  hurricaneNotifications: boolean
-  lightningNotifications: boolean
-  weatherUpdateRate: string
 }
 
 const settingOptions: SettingOption[] = [
@@ -82,11 +75,11 @@ const settingOptions: SettingOption[] = [
     type: 'select',
     options: ['15min', '30min', '1h'],
   },
-  { key: 'about', label: 'Version: 1.0.0', type: 'text' },
+  // { key: 'about', label: 'Version: 1.0.0', type: 'text' },
 ]
 
 const SettingScreen: React.FC = () => {
-  const [settings, setSettings] = useState<Settings>({
+  const [settings, setSettings] = useState<Partial<Settings>>({
     temperatureUnit: 'Celsius',
     windSpeedUnit: 'km/h',
     pressureUnit: 'hPa',
@@ -98,6 +91,20 @@ const SettingScreen: React.FC = () => {
     weatherUpdateRate: '30min',
   })
 
+  const dispatch = useDispatch()
+  const selector = useSelector((r: RootState) => r.settingReducer.settings)
+  useEffect(() => {
+    dispatch({
+      type: settingReducerCase.changeSettings,
+      payload: settings,
+    })
+  }, [settings])
+
+  useEffect(() => {
+    const settings = selector
+    setSettings(settings)
+  }, [])
+
   const renderSettingItem = ({ item }: { item: SettingOption }) => {
     switch (item.type) {
       case 'select':
@@ -105,12 +112,12 @@ const SettingScreen: React.FC = () => {
           <Box>
             <Text>{item.label}</Text>
             <Select
-              selectedValue={settings[item.key as keyof Settings]}
+              selectedValue={settings[item.key as keyof Settings] as string}
               minWidth="200"
               accessibilityLabel={`Choose ${item.label}`}
               placeholder={`Choose ${item.label}`}
               _selectedItem={{
-                bg: 'teal.600',
+                bg: 'teal.300',
                 endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
@@ -129,8 +136,11 @@ const SettingScreen: React.FC = () => {
         )
       case 'switch':
         return (
-          <Box>
-            <Text>{item.label}</Text>
+          <Box style={styles.switchContainer}>
+            <Box>
+              <Text style={{ marginVertical: 'auto' }}>{item.label}</Text>
+            </Box>
+            <Text style={{ flexGrow: 1 }}></Text>
             <Switch
               isChecked={settings[item.key as keyof Settings] as boolean}
               onToggle={() =>
@@ -169,6 +179,7 @@ const SettingScreen: React.FC = () => {
           <VStack space={5}>
             <Heading size="md">Settings</Heading>
             <Divider />
+            <Box />
           </VStack>
         )}
       />
