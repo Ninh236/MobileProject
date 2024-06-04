@@ -46,7 +46,7 @@ export function InfoBox({ region, setLoading }: IProps) {
         setLoading?.(false)
         setWeatherLoading(false)
       })
-  }, [region?.latitude.toFixed(3), region?.longitude.toFixed(3)])
+  }, [region?.latitude.toFixed(2), region?.longitude.toFixed(2)])
 
   let hasWeather = !weatherLoading && region
 
