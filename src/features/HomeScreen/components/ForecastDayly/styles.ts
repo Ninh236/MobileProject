@@ -10,6 +10,16 @@ export const styles = StyleSheet.create({
     minWidth: 96,
   },
 
+  chanceText: {
+    fontSize: 12,
+    color: '#3ABEF9',
+    lineHeight: 16,
+    fontWeight: '500',
+    position: 'absolute',
+    left: 38,
+    bottom: -2,
+  },
+
   daylyTempMax: {
     fontSize: 18,
     lineHeight: 22,

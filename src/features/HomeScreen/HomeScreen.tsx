@@ -71,18 +71,18 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      console.log(
-        'getting current weather data at',
-        location?.coords.latitude,
-        location?.coords.longitude
-      )
+      //console.log(
+      //  'getting current weather data at',
+      //  location?.coords.latitude,
+      //  location?.coords.longitude
+      //)
       Api.getInstance()
         .weatherData.getCurrentWeather(
           location?.coords.latitude,
           location?.coords.longitude
         )
         .then((res) => {
-          console.log('current', JSON.stringify(res.data))
+          //console.log('current', JSON.stringify(res.data))
           dispatch({
             type: weatherReducerCase.setCurrentWeatherData,
             payload: res.data,
@@ -96,11 +96,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      console.log(
-        'getting forecast weather data at',
-        location?.coords.latitude,
-        location?.coords.longitude
-      )
+      //console.log(
+      //  'getting forecast weather data at',
+      //  location?.coords.latitude,
+      //  location?.coords.longitude
+      //)
       Api.getInstance()
         .weatherData.getForecastWeather(
           location?.coords.latitude,
@@ -108,7 +108,7 @@ export default function HomeScreen() {
           7
         )
         .then((res) => {
-          console.log('forecast', JSON.stringify(res.data))
+          //console.log('forecast', JSON.stringify(res.data))
           dispatch({
             type: weatherReducerCase.setForecastData,
             payload: res.data,

@@ -51,11 +51,22 @@ export default function ForecastDayly(props: ForecastDaylyProps) {
                           weekday: 'narrow',
                         })}
                   </Text>
-                  <Image
-                    style={styles.daylyConditionImage}
-                    source={{ uri: 'https:' + item.day.condition.icon }}
-                    alt="weather icon"
-                  />
+                  <Box>
+                    <Image
+                      style={styles.daylyConditionImage}
+                      source={{ uri: 'https:' + item.day.condition.icon }}
+                      alt="weather icon"
+                    />
+                    {item.day.daily_chance_of_rain > 0 ? (
+                      <Text style={styles.chanceText}>
+                        {item.day.daily_chance_of_rain}%
+                      </Text>
+                    ) : item.day.daily_chance_of_snow > 0 ? (
+                      <Text style={styles.chanceText}>
+                        {item.day.daily_chance_of_snow}%
+                      </Text>
+                    ) : null}
+                  </Box>
                   <Container style={styles.heatLineContainer}>
                     <Text style={styles.daylyTempMin}>
                       {item.day.mintemp_c.toFixed(0)}°
