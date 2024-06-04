@@ -1,7 +1,8 @@
 import { ReducerArgs } from '@common/types/reducer.type'
+import { Settings } from '@common/types/settings.type'
 
 export interface settingReducerState {
-  settings: any
+  settings: Partial<Settings>
 }
 
 const initialState: settingReducerState = {
@@ -18,10 +19,11 @@ export default function settingReducer(
 ): settingReducerState {
   switch (type) {
     case settingReducerCase.changeSettings:
-      return {
+      let s = {
         ...state,
         settings: payload,
       }
+      return Object.create(s)
     default:
       return state
   }
