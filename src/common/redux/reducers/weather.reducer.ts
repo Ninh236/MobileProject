@@ -3,12 +3,12 @@ import { ReducerArgs } from '@common/types/reducer.type'
 import { ForecastDataResponse } from '../../types/forecast-data.type'
 import { REHYDRATE } from 'redux-persist'
 
-export interface weatherReducerState {
+export interface WeatherReducerState {
   currentWeatherData: CurrentWeatherDataResponse | null
   forecastData: ForecastDataResponse | null
 }
 
-const initialState: weatherReducerState = {
+const initialState: WeatherReducerState = {
   currentWeatherData: null,
   forecastData: null,
 }
@@ -21,20 +21,27 @@ export const weatherReducerCase = {
 export default function weatherReducer(
   state = initialState,
   { type, payload }: ReducerArgs
-): weatherReducerState {
+): WeatherReducerState {
   switch (type) {
     case REHYDRATE:
       if (payload) {
-        state.currentWeatherData = payload.currentWeatherData
-        state.forecastData = payload.forecastData
+        return {
+          ...state,
+          currentWeatherData: payload.currentWeatherData,
+          forecastData: payload.forecastData,
+        }
       }
-      return Object.create(state)
+      return state
     case weatherReducerCase.setCurrentWeatherData:
-      state.currentWeatherData = payload
-      return Object.create(state)
+      return {
+        ...state,
+        currentWeatherData: payload,
+      }
     case weatherReducerCase.setForecastData:
-      state.forecastData = payload
-      return Object.create(state)
+      return {
+        ...state,
+        forecastData: payload,
+      }
     default:
       return state
   }

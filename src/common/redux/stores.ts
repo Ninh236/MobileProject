@@ -20,6 +20,7 @@ export const stores = configureStore({
   devTools: false,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
+      immutableCheck: false,
       serializableCheck: false,
     }),
 })
