@@ -1,5 +1,5 @@
 import { Box, Text, View, Image } from 'native-base'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import * as Location from 'expo-location'
 
 import { styles } from './styles'
@@ -7,13 +7,26 @@ import MapView, { Region } from 'react-native-maps'
 // @ts-ignore
 import marker from '../../common/assets/marker.png'
 import { InfoBox } from './components/InfoBox'
+import { useDispatch, useSelector } from 'react-redux'
+import { mapReducerCase } from '@common/redux/reducers/map.reducer'
+import { RootState } from '@common/redux/stores'
 
 const latitudeDelta = 0.025
 const longitudeDelta = 0.025
 
 export default function MapScreen() {
-  let [region, setRegion] = useState<Region | null>(null)
+  let dispatch = useDispatch()
+  let region = useSelector((r: RootState) => r.mapReducer.region)
   let [loading, setLoading] = useState(false)
+
+  const setRegion = useMemo(() => {
+    return (region: Region) => {
+      dispatch({
+        type: mapReducerCase.region,
+        payload: region,
+      })
+    }
+  }, [dispatch])
 
   useEffect(() => {
     void (async function () {
@@ -30,7 +43,6 @@ export default function MapScreen() {
         latitudeDelta,
         longitudeDelta,
       }
-      setRegion(region)
     })()
   }, [])
 

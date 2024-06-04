@@ -9,6 +9,8 @@ import {
 import { useEffect, useState } from 'react'
 import { Region } from 'react-native-maps'
 import WeatherApi from '@common/apis/weatherapi.api'
+import { useSelector } from 'react-redux'
+import { RootState } from '@common/redux/stores'
 
 interface IProps {
   region?: Region
@@ -50,6 +52,11 @@ export function InfoBox({ region, setLoading }: IProps) {
 
   let hasWeather = !weatherLoading && region
 
+  let isF = useSelector((r: RootState) => {
+    let l = r.settingReducer.settings
+    return !!l.temperatureUnit?.toLowerCase().startsWith('f')
+  })
+
   return (
     <>
       <View style={styles.infoBox}>
@@ -57,7 +64,11 @@ export function InfoBox({ region, setLoading }: IProps) {
           {hasWeather && (
             <Box>
               <Text style={styles.temperatureBoxText}>
-                {Math.floor(r?.current.temp_c || 0)} °C
+                {isF ? (
+                  <>{Math.floor(r?.current.temp_f || 0)} °F</>
+                ) : (
+                  <>{Math.floor(r?.current.temp_c || 0)} °C</>
+                )}
               </Text>
             </Box>
           )}
@@ -94,7 +105,17 @@ export function InfoBox({ region, setLoading }: IProps) {
               <Button style={styles.forecastButton}>
                 <Text style={styles.forecastButtonText}>Ngày mai</Text>
                 <Text style={styles.forecastButtonTemp}>
-                  {Math.floor(r?.forecast?.forecastday?.[1].day.avgtemp_c)} °C
+                  {isF ? (
+                    <>
+                      {Math.floor(r?.forecast?.forecastday?.[1].day.avgtemp_f)}{' '}
+                      °F
+                    </>
+                  ) : (
+                    <>
+                      {Math.floor(r?.forecast?.forecastday?.[1].day.avgtemp_c)}{' '}
+                      °C
+                    </>
+                  )}
                 </Text>
               </Button>
             </Box>
@@ -140,7 +161,11 @@ export function InfoBox({ region, setLoading }: IProps) {
                         {text}
                       </Text>
                       <Text style={styles.forecastDayTemp}>
-                        {Math.floor(item.day.avgtemp_c)} °C
+                        {isF ? (
+                          <>{Math.floor(item.day.avgtemp_f)} °F</>
+                        ) : (
+                          <>{Math.floor(item.day.avgtemp_c)} °C</>
+                        )}
                       </Text>
                     </Box>
                   </>

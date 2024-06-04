@@ -14,9 +14,11 @@ export interface WeatherApiLocation {
 
 export interface WeatherApiCurrent {
   temp_c: number
+  temp_f: number
   cloud: number
   condition: WeatherApiCondition
   feelslike_c: number
+  feelslike_f: number
 }
 
 export interface WeatherApiCondition {
@@ -39,12 +41,18 @@ export interface WeatherApiForecastDay {
     maxtemp_c: number
     mintemp_c: number
     avgtemp_c: number
+
+    maxtemp_f: number
+    mintemp_f: number
+    avgtemp_f: number
     hour: {
       time_epoch: number
       time: string
       temp_c: number
+      temp_f: number
       condition: WeatherApiCondition
       feelslike_c: number
+      feelslike_f: number
     }[]
   }
 }
