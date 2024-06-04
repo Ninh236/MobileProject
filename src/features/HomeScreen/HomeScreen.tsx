@@ -71,11 +71,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      console.log(
-        'getting current weather data at',
-        location?.coords.latitude,
-        location?.coords.longitude
-      )
+      //console.log(
+      //  'getting current weather data at',
+      //  location?.coords.latitude,
+      //  location?.coords.longitude
+      //)
       Api.getInstance()
         .weatherData.getCurrentWeather(
           location?.coords.latitude,
@@ -95,11 +95,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      console.log(
-        'getting forecast weather data at',
-        location?.coords.latitude,
-        location?.coords.longitude
-      )
+      //console.log(
+      //  'getting forecast weather data at',
+      //  location?.coords.latitude,
+      //  location?.coords.longitude
+      //)
       Api.getInstance()
         .weatherData.getForecastWeather(
           location?.coords.latitude,
