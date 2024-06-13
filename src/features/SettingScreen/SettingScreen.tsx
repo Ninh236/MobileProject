@@ -9,6 +9,7 @@ import {
   Divider,
   FlatList,
   VStack,
+  Button,
 } from 'native-base'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +17,7 @@ import { settingReducerCase } from '@common/redux/reducers/setting.reducer'
 import { RootState } from '@common/redux/stores'
 import { Settings } from '@common/types/settings.type'
 import { styles } from './styles'
+import { schedulePushNotification } from '@features/Notification/Notifications'
 
 interface SettingOption {
   key: string
@@ -27,55 +29,48 @@ interface SettingOption {
 const settingOptions: SettingOption[] = [
   {
     key: 'temperatureUnit',
-    label: 'Temperature unit',
+    label: 'Đơn vị nhiệt độ',
     type: 'select',
     options: ['Celsius', 'Fahrenheit'],
   },
   {
     key: 'windSpeedUnit',
-    label: 'Wind speed unit',
+    label: 'Đơn vị tốc độ gió',
     type: 'select',
     options: ['km/h', 'mph'],
   },
   {
     key: 'pressureUnit',
-    label: 'Pressure unit',
+    label: 'Đơn vị áp suất',
     type: 'select',
     options: ['hPa', 'mmHg'],
   },
   {
-    key: 'timeFormat',
-    label: 'Time format',
-    type: 'select',
-    options: ['24h', '12h'],
-  },
-  {
     key: 'notificationCurrentConditions',
-    label: 'Notification - Current conditions',
+    label: 'Thông báo - Thời tiết hiện tại',
     type: 'switch',
   },
   {
     key: 'warningNotifications',
-    label: 'Warning notifications',
+    label: 'Cảnh báo thời tiết',
     type: 'switch',
   },
   {
     key: 'hurricaneNotifications',
-    label: 'Hurricane notifications',
+    label: 'Cảnh báo bão',
     type: 'switch',
   },
   {
     key: 'lightningNotifications',
-    label: 'Lightning notifications',
+    label: 'Cảnh báo sét',
     type: 'switch',
   },
   {
     key: 'weatherUpdateRate',
-    label: 'Weather update rate',
+    label: 'Tần suất cập nhật thời tiết',
     type: 'select',
-    options: ['15min', '30min', '1h'],
+    options: ['15 phút', '30 phút', '1 giờ'],
   },
-  // { key: 'about', label: 'Version: 1.0.0', type: 'text' },
 ]
 
 const SettingScreen: React.FC = () => {
@@ -93,6 +88,14 @@ const SettingScreen: React.FC = () => {
 
   const dispatch = useDispatch()
   const selector = useSelector((r: RootState) => r.settingReducer.settings)
+
+  const currentWeather = useSelector(
+    (state: RootState) => state.weatherReducer.currentWeatherData
+  )
+  const forecastWeather = useSelector(
+    (state: RootState) => state.weatherReducer.forecastData
+  )
+
   useEffect(() => {
     dispatch({
       type: settingReducerCase.changeSettings,
@@ -109,13 +112,13 @@ const SettingScreen: React.FC = () => {
     switch (item.type) {
       case 'select':
         return (
-          <Box>
+          <Box style={{ marginTop: 10 }}>
             <Text>{item.label}</Text>
             <Select
               selectedValue={settings[item.key as keyof Settings] as string}
               minWidth="200"
-              accessibilityLabel={`Choose ${item.label}`}
-              placeholder={`Choose ${item.label}`}
+              accessibilityLabel={`Lựa chọn ${item.label.toLowerCase()}`}
+              placeholder={`Lựa chọn ${item.label.toLowerCase()}`}
               _selectedItem={{
                 bg: 'teal.300',
                 endIcon: <CheckIcon size="5" />,
@@ -142,6 +145,7 @@ const SettingScreen: React.FC = () => {
             </Box>
             <Text style={{ flexGrow: 1 }}></Text>
             <Switch
+              style={{ marginTop: 10 }}
               isChecked={settings[item.key as keyof Settings] as boolean}
               onToggle={() =>
                 setSettings({
@@ -177,12 +181,36 @@ const SettingScreen: React.FC = () => {
         keyExtractor={(item) => item.key}
         ListHeaderComponent={() => (
           <VStack space={5}>
-            <Heading size="md">Settings</Heading>
+            <Heading size="md">Cài đặt</Heading>
             <Divider />
             <Box />
           </VStack>
         )}
       />
+      <Button
+        style={{ marginTop: 20 }}
+        onPress={async () => {
+          const currentTime =
+            new Date().getHours() + ':' + new Date().getMinutes()
+          await schedulePushNotification({
+            title: `Thời Tiết Hiện Tại - ${currentTime}`,
+            body:
+              `Nhiệt độ ${currentWeather?.current.temp_c}°C 🌡️, ` +
+              `Độ ẩm ${currentWeather?.current.humidity}% 💧,` +
+              '\n' +
+              (forecastWeather?.forecast.forecastday[0].day
+                .daily_chance_of_rain != 0
+                ? 'Tỉ lệ mưa ' +
+                  forecastWeather?.forecast.forecastday[0].day
+                    .daily_chance_of_rain +
+                  '% 🌧️,'
+                : '') +
+              `Tốc độ gió ${currentWeather?.current.wind_kph} km/h 🌬️ `,
+          })
+        }}
+      >
+        Test Hourly Notification
+      </Button>
     </Box>
   )
 }

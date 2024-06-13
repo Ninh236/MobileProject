@@ -2,6 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Box } from 'native-base'
 import React, { useEffect } from 'react'
 import { styles } from './styles'
+import { useSelector } from 'react-redux'
+import { RootState } from '@common/redux/stores'
 
 interface HeatLineProps {
   isCurrentDay: boolean
@@ -26,16 +28,22 @@ export default function HeatLine(props: HeatLineProps) {
   const [endColorValue, setEndColorValue] = React.useState('#00000000')
   const [middleColorValue, setMiddleColorValue] = React.useState('#00000000')
 
+  const selectedTemperature = useSelector(
+    (state: RootState) => state.settingReducer.settings.temperatureUnit
+  )
+
   const setColorByTemp = (temp: number) => {
-    return temp < 0
+    const calcTemp =
+      selectedTemperature != 'Fahrenheit' ? temp : (temp * 9) / 5 + 32
+    return calcTemp < 0
       ? '#0001ff'
-      : temp < 10
+      : calcTemp < 10
         ? '#4bff00'
-        : temp < 20
+        : calcTemp < 20
           ? '#feff00'
-          : temp < 30
+          : calcTemp < 30
             ? '#ffaa00'
-            : temp < 40
+            : calcTemp < 40
               ? '#ff6f00'
               : '#ff0000'
   }

@@ -11,9 +11,11 @@ import {
 import { styles } from './styles'
 import { Condition, CurrentWeatherData } from '@common/types/current-data.type'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LocationData } from '@common/types/location-data.type'
 import { ForecastDayDayData } from '@common/types/forecast-data.type'
+import { useSelector } from 'react-redux'
+import { RootState } from '@common/redux/stores'
 
 interface CurrentWeatherProps {
   currentWeatherData: CurrentWeatherData
@@ -24,6 +26,10 @@ interface CurrentWeatherProps {
 export default function CurrentWeather(props: CurrentWeatherProps) {
   const { currentWeatherData, currentLocation, daylyData } = props
 
+  const selectedTemperature = useSelector(
+    (state: RootState) => state.settingReducer.settings.temperatureUnit
+  )
+
   return (
     <Box>
       <Center>
@@ -31,7 +37,10 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
           <Text style={styles.locationText}>{currentLocation.name}</Text>
           <Text style={styles.currentDegree}>
             {'  '}
-            {currentWeatherData.temp_c.toFixed(0)}°
+            {selectedTemperature != 'Fahrenheit'
+              ? currentWeatherData.temp_c.toFixed(0)
+              : currentWeatherData.temp_f.toFixed(0)}
+            °
           </Text>
           <HStack alignItems="center" style={styles.conditionContainer}>
             <Image
@@ -44,8 +53,15 @@ export default function CurrentWeather(props: CurrentWeatherProps) {
             </Text>
           </HStack>
           <Text style={styles.tempDaylyText}>
-            C:{daylyData.maxtemp_c.toFixed(0)}° T:
-            {daylyData.mintemp_c.toFixed(0)}°
+            C:
+            {selectedTemperature != 'Fahrenheit'
+              ? daylyData.maxtemp_c.toFixed(0)
+              : daylyData.maxtemp_f.toFixed(0)}
+            ° T:
+            {selectedTemperature != 'Fahrenheit'
+              ? daylyData.mintemp_c.toFixed(0)
+              : daylyData.mintemp_f.toFixed(0)}
+            °
           </Text>
         </VStack>
       </Center>

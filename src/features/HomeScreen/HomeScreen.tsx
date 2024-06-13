@@ -36,6 +36,10 @@ export default function HomeScreen() {
   const [backgroundPermissionAsync, setBackgroundPermissionAsync] =
     useState<Location.PermissionStatus | null>(null)
 
+  const selectedTemperature = useSelector(
+    (state: RootState) => state.settingReducer.settings.temperatureUnit
+  )
+
   useEffect(() => {
     ;(async () => {
       const { status } = await Location.requestForegroundPermissionsAsync()
@@ -136,7 +140,11 @@ export default function HomeScreen() {
                 />
                 <ForecastDayly
                   forecastDaylyData={forecastData.forecast.forecastday}
-                  currentTemp={weatherData.current.temp_c}
+                  currentTemp={
+                    selectedTemperature != 'Fahrenheit'
+                      ? weatherData.current.temp_c
+                      : weatherData.current.temp_f
+                  }
                 />
                 <HStack space={4}>
                   <CurrentHumidity
