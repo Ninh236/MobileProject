@@ -37,3 +37,4 @@ yarn-error.*
 # Bang's local files
 MobileApplicationDevelopment.code-workspace
 run.ps1
+package-lock.json

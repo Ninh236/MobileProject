@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react'
 import { Image } from 'react-native'
 import HeatLine from './components/HeatLine'
 import { styles } from './styles'
+import { useSelector } from 'react-redux'
+import { RootState } from '@common/redux/stores'
 
 export interface ForecastDaylyProps {
   forecastDaylyData: ForecastDayData[]
@@ -14,15 +16,33 @@ export interface ForecastDaylyProps {
 
 export default function ForecastDayly(props: ForecastDaylyProps) {
   const { forecastDaylyData, currentTemp } = props
-  const [weekMinTemp, setMinTemp] = useState(0)
+  const [weekMinTemp, setWeekMinTemp] = useState(0)
   const [weekMaxTemp, setWeekMaxTemp] = useState(0)
 
+  const selectedTemperature = useSelector(
+    (state: RootState) => state.settingReducer.settings.temperatureUnit
+  )
+
   useEffect(() => {
-    setMinTemp(Math.min(...forecastDaylyData.map((item) => item.day.mintemp_c)))
-    setWeekMaxTemp(
-      Math.max(...forecastDaylyData.map((item) => item.day.maxtemp_c))
+    setWeekMinTemp(
+      Math.min(
+        ...forecastDaylyData.map((item) =>
+          selectedTemperature != 'Fahrenheit'
+            ? item.day.mintemp_c
+            : item.day.mintemp_f
+        )
+      )
     )
-  }, [forecastDaylyData])
+    setWeekMaxTemp(
+      Math.max(
+        ...forecastDaylyData.map((item) =>
+          selectedTemperature != 'Fahrenheit'
+            ? item.day.maxtemp_c
+            : item.day.maxtemp_f
+        )
+      )
+    )
+  }, [forecastDaylyData, selectedTemperature])
 
   return (
     <Card
@@ -69,18 +89,35 @@ export default function ForecastDayly(props: ForecastDaylyProps) {
                   </Box>
                   <Container style={styles.heatLineContainer}>
                     <Text style={styles.daylyTempMin}>
-                      {item.day.mintemp_c.toFixed(0)}°
+                      {selectedTemperature != 'Fahrenheit'
+                        ? item.day.mintemp_c.toFixed(0)
+                        : item.day.mintemp_f.toFixed(0)}
+                      °
                     </Text>
-                    <HeatLine
-                      isCurrentDay={index == 0}
-                      currentTemp={Number(currentTemp.toFixed(0))}
-                      weekMinTemp={Number(weekMinTemp.toFixed(0))}
-                      weekMaxTemp={Number(weekMaxTemp.toFixed(0))}
-                      minTemp={Number(item.day.mintemp_c.toFixed(0))}
-                      maxTemp={Number(item.day.maxtemp_c.toFixed(0))}
-                    />
+                    {selectedTemperature != 'Fahrenheit' ? (
+                      <HeatLine
+                        isCurrentDay={index == 0}
+                        currentTemp={Number(currentTemp.toFixed(0))}
+                        weekMinTemp={Number(weekMinTemp.toFixed(0))}
+                        weekMaxTemp={Number(weekMaxTemp.toFixed(0))}
+                        minTemp={Number(item.day.mintemp_c.toFixed(0))}
+                        maxTemp={Number(item.day.maxtemp_c.toFixed(0))}
+                      />
+                    ) : (
+                      <HeatLine
+                        isCurrentDay={index == 0}
+                        currentTemp={Number(currentTemp.toFixed(0))}
+                        weekMinTemp={Number(weekMinTemp.toFixed(0))}
+                        weekMaxTemp={Number(weekMaxTemp.toFixed(0))}
+                        minTemp={Number(item.day.mintemp_f.toFixed(0))}
+                        maxTemp={Number(item.day.maxtemp_f.toFixed(0))}
+                      />
+                    )}
                     <Text style={styles.daylyTempMax}>
-                      {item.day.maxtemp_c.toFixed(0)}°
+                      {selectedTemperature != 'Fahrenheit'
+                        ? item.day.maxtemp_c.toFixed(0)
+                        : item.day.maxtemp_f.toFixed(0)}
+                      °
                     </Text>
                   </Container>
                 </Container>
