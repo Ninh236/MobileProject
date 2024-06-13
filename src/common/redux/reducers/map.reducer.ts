@@ -11,8 +11,8 @@ export interface MapSettings {
 
 const initialState: MapSettings = {
   region: {
-    latitude: 105,
-    longitude: 21,
+    latitude: 21,
+    longitude: 105,
     latitudeDelta: 0.025,
     longitudeDelta: 0.025,
   },

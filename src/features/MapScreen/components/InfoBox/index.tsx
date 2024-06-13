@@ -25,8 +25,10 @@ export function InfoBox({ region, setLoading }: IProps) {
     if (!region) {
       return
     }
-
-    console.log(region.latitude, region.longitude)
+    console.log(
+      Math.floor((region?.latitude ?? 0) * 200),
+      Math.floor((region?.longitude ?? 0) * 200)
+    )
 
     setLoading?.(true)
     setWeatherLoading(true)
@@ -48,7 +50,10 @@ export function InfoBox({ region, setLoading }: IProps) {
         setLoading?.(false)
         setWeatherLoading(false)
       })
-  }, [region?.latitude.toFixed(2), region?.longitude.toFixed(2)])
+  }, [
+    Math.floor((region?.latitude ?? 0) * 200),
+    Math.floor((region?.longitude ?? 0) * 200),
+  ])
 
   let hasWeather = !weatherLoading && region
 

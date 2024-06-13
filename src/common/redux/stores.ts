@@ -1,5 +1,5 @@
 import { configureStore, Reducer, UnknownAction } from '@reduxjs/toolkit'
-import { persistReducer, persistStore } from 'redux-persist'
+import { PersistConfig, persistReducer, persistStore } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { rootReducers } from './rootReducers'
 import AsyncStorage from '@react-native-async-storage/async-storage'
